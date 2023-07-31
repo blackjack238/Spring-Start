@@ -20,6 +20,7 @@ dependencies {
 	implementation 'org.projectlombok:lombok:1.18.22'
 	implementation 'org.springframework.boot:spring-boot-starter'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation 'org.springframework:spring-beans:6.0.9'
 }
 
 tasks.named('test') {
