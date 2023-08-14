@@ -7,7 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/note")
+@RequestMapping("/note")//2
 public class NoteController {
 
     private final NoteService noteService;
