@@ -1,54 +1,47 @@
 package com.example.demo.service;
+
 import com.example.demo.entity.Note;
+import com.example.demo.repository.NoteRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class NoteService {
 
-    private final Map<Long, Note> notesMap = new HashMap<>();
-    private final Random random = new Random();
+    private final NoteRepository noteRepository;
+
+    @Autowired
+    public NoteService(NoteRepository noteRepository) {
+        this.noteRepository = noteRepository;
+    }
 
     public List<Note> listAll() {
-        return new ArrayList<>(notesMap.values());
+        return noteRepository.findAll();
     }
 
     public Note add(Note note) {
-        long id = generateUniqueId();
-        note.setId(id);
-        notesMap.put(id, note);
-        return note;
+        return noteRepository.save(note);
     }
 
     public void deleteById(long id) {
-        if (!notesMap.containsKey(id)) {
+        if (!noteRepository.existsById(id)) {
             throw new NoSuchElementException("Note with ID " + id + " not found.");
         }
-        notesMap.remove(id);
+        noteRepository.deleteById(id);
     }
 
     public void update(Note note) {
-        long id = note.getId();
-        if (!notesMap.containsKey(id)) {
-            throw new NoSuchElementException("Note with ID " + id + " not found.");
+        if (!noteRepository.existsById(note.getId())) {
+            throw new NoSuchElementException("Note with ID " + note.getId() + " not found.");
         }
-        notesMap.put(id, note);
+        noteRepository.save(note);
     }
 
     public Note getById(long id) {
-        Note note = notesMap.get(id);
-        if (note == null) {
-            throw new NoSuchElementException("Note with ID " + id + " not found.");
-        }
-        return note;
-    }
-
-    private long generateUniqueId() {
-        long id;
-        do {
-            id = random.nextLong();
-        } while (id <= 0 || notesMap.containsKey(id));
-        return id;
+        return noteRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Note with ID " + id + " not found."));
     }
 }
